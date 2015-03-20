@@ -9,8 +9,24 @@ app.use(express.bodyParser());    // 读取请求 body 的中间件
 
 // 使用 Express 路由 API 服务 /hello 的 HTTP GET 请求
 app.get('/hello', function(req, res) {
-  res.render('hello', { message: 'Congrats, you just set up your app!' });
+	AV.Cloud.httpRequest({
+  url: 'http://www.baidu.com',
+  success: function(httpResponse) {
+  	res.render('hello', { message: httpResponse.text });
+
+    console.log(httpResponse.text);
+  },
+  error: function(httpResponse) {
+    console.error('Request failed with response code ' + httpResponse.status);
+  }
+});
+  // res.render('hello', { message: 'Congrats, you just set up your appsdf!' });
 });
 
 // 最后，必须有这行代码来使 express 响应 HTTP 请求
 app.listen();
+
+//自定义 404 页面
+app.use(function(req, res, next){
+  res.status(404).render('404', {title: 'Sorry, page not found'});
+});
